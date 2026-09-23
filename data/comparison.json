@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "train_samples": 700,
+  "test_samples": 300,
+  "epochs": 14,
+  "seed": 42,
+  "note": "Compare common evaluation metrics, not raw training loss across different objectives.",
+  "experiments": [
+    {
+      "loss": "cross_entropy",
+      "eval_loss": 4.288581797293273,
+      "perplexity": 72.86306060051953,
+      "token_accuracy": 0.5659961205411905,
+      "answer_eval_loss": 2.6127360598828964,
+      "answer_token_accuracy": 0.7153827946243063,
+      "peak_reserved_vram_gb": 6.986,
+      "train_runtime_seconds": 5625.091
+    },
+    {
+      "loss": "label_smoothing",
+      "eval_loss": 2.9612360218733667,
+      "perplexity": 19.32183921801841,
+      "token_accuracy": 0.5666729108630889,
+      "answer_eval_loss": 1.8562916806039944,
+      "answer_token_accuracy": 0.7117271125371486,
+      "peak_reserved_vram_gb": 8.492,
+      "train_runtime_seconds": 5677.2954
+    },
+    {
+      "loss": "focal",
+      "eval_loss": 3.059899826809116,
+      "perplexity": 21.325420819576127,
+      "token_accuracy": 0.5685038703946533,
+      "answer_eval_loss": 1.7011803911952672,
+      "answer_token_accuracy": 0.7185913789022433,
+      "peak_reserved_vram_gb": 9.643,
+      "train_runtime_seconds": 5644.4935
+    },
+    {
+      "loss": "answer_weighted",
+      "eval_loss": 4.284126951932969,
+      "perplexity": 72.5391888679286,
+      "token_accuracy": 0.5638448941608707,
+      "answer_eval_loss": 2.5921414272275616,
+      "answer_token_accuracy": 0.7189858769692028,
+      "peak_reserved_vram_gb": 10.814,
+      "train_runtime_seconds": 5588.2378
+    }
+  ]
+}

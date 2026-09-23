@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Qwen2.5-3B medical reasoning loss-function ablation dashboard.">
+  <title>Qwen2.5-3B Loss Ablation Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">LLM TRAINING EXPERIMENT</div>
+    <h1>Qwen2.5-3B Loss Function Ablation</h1>
+    <p class="lead">Controlled comparison of four training objectives on medical reasoning data. Same model, split, seed, LoRA setup, optimizer and 14 training epochs.</p>
+    <div class="meta"><span>700 train</span><span>300 test</span><span>14 epochs</span><span>Seed 42</span><span>4-bit QLoRA</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="summaryCards" class="summary-grid"></section>
+
+  <section class="panel">
+    <div class="kicker">Experiment design</div>
+    <h2>Four controlled objectives</h2>
+    <div class="method-grid">
+      <article><h3>Cross Entropy</h3><p>Standard causal-LM objective used as the baseline.</p></article>
+      <article><h3>Label Smoothing</h3><p>ε = 0.05. Softens targets to reduce overconfidence.</p></article>
+      <article><h3>Focal Loss</h3><p>γ = 2.0. Puts relatively more emphasis on difficult tokens.</p></article>
+      <article><h3>Answer-Weighted CE</h3><p>2× weight on final-answer tokens; reasoning remains 1×.</p></article>
+    </div>
+  </section>
+
+  <section class="charts-grid">
+    <article class="panel chart-panel"><div class="kicker">Lower is better</div><h2>Evaluation Loss</h2><canvas id="evalLossChart"></canvas></article>
+    <article class="panel chart-panel"><div class="kicker">Lower is better</div><h2>Perplexity</h2><canvas id="perplexityChart"></canvas></article>
+    <article class="panel chart-panel"><div class="kicker">Higher is better</div><h2>Token Accuracy</h2><canvas id="tokenAccuracyChart"></canvas></article>
+    <article class="panel chart-panel"><div class="kicker">Final-answer behavior</div><h2>Answer Metrics</h2><canvas id="answerChart"></canvas></article>
+    <article class="panel chart-panel"><div class="kicker">Resource usage</div><h2>Peak Reserved VRAM</h2><canvas id="vramChart"></canvas></article>
+    <article class="panel chart-panel"><div class="kicker">Wall-clock cost</div><h2>Training Runtime</h2><canvas id="runtimeChart"></canvas></article>
+  </section>
+
+  <section class="panel">
+    <div class="kicker">Complete results</div>
+    <h2>Side-by-side comparison</h2>
+    <div class="table-wrap">
+      <table id="resultsTable">
+        <thead><tr><th>Loss</th><th>Eval loss ↓</th><th>Perplexity ↓</th><th>Token accuracy ↑</th><th>Answer loss ↓</th><th>Answer accuracy ↑</th><th>VRAM GB</th><th>Runtime min</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="kicker">Interpretation</div>
+    <h2>What the experiment suggests</h2>
+    <div class="findings">
+      <article><span>01</span><div><h3>Loss choice materially changed probability quality</h3><p>Label smoothing and focal loss sharply reduced common evaluation loss and perplexity versus standard cross entropy.</p></div></article>
+      <article><span>02</span><div><h3>Label smoothing improved NLL more than accuracy</h3><p>The result is consistent with better-calibrated confidence rather than a large shift in top-1 token predictions.</p></div></article>
+      <article><span>03</span><div><h3>Focal loss gave the strongest balanced profile</h3><p>It achieved the highest overall token accuracy and the lowest answer-only evaluation loss while keeping perplexity low.</p></div></article>
+      <article><span>04</span><div><h3>2× answer weighting only marginally changed answer accuracy</h3><p>It had the highest answer-token accuracy by a tiny margin, but overall likelihood metrics remained close to the CE baseline.</p></div></article>
+      <article><span>05</span><div><h3>Next step: replicate across seeds</h3><p>These are single-seed results. Stronger evidence requires repeated runs and an untouched final holdout set.</p></div></article>
+    </div>
+  </section>
+
+  <section class="panel note"><strong>Important:</strong> raw training loss is not directly comparable across different loss functions. All dashboard comparisons use the common post-training evaluator.</section>
+</main>
+
+<footer class="wrap footer"><span>Qwen2.5-3B-Instruct · Medical reasoning loss-ablation study</span><span>GitHub Pages dashboard</span></footer>
+<script src="app.js"></script>
+</body>
+</html>
